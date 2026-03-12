@@ -21,5 +21,23 @@ services:
     networks:
       - laravel
 
+  db:
+    image: postgres:15
+    container_name: laravel_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: laravel
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: laravel
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - laravel
+
+volumes:
+  postgres_data:
+
 networks:
   laravel:
