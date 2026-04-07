@@ -39,6 +39,12 @@ export default function Authenticated({
 
                             <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink
+                                    href="/"
+                                    active={location.pathname === '/'}
+                                >
+                                    Home
+                                </NavLink>
+                                <NavLink
                                     href="/dashboard"
                                     active={location.pathname === '/dashboard'}
                                 >
@@ -145,6 +151,12 @@ export default function Authenticated({
                             active={location.pathname === '/dashboard'}
                         >
                             Dashboard
+                        </ResponsiveNavLink>
+                                                <ResponsiveNavLink
+                            href="/dashboard"
+                            active={location.pathname === '/dashboard'}
+                        >
+                            Home
                         </ResponsiveNavLink>
                     </div>
 
