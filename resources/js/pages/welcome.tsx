@@ -6,7 +6,7 @@ export default function Welcome() {
                     <p className="text-9xl font-bold">welcome</p>
                 </div>
                 <div>
-                    <a href="/login">acceder</a>
+                    <a href="/games">acceder</a>
                 </div>
             </div>
         </div>
