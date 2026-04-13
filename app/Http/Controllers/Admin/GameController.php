@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Game;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Game;
 use Inertia\Inertia;
 
 class GameController extends Controller
@@ -13,7 +14,7 @@ class GameController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Games', [
+        return Inertia::render('Admin/Games', [
             'games' => Game::all()
         ]);
     }
@@ -37,12 +38,9 @@ class GameController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $slug)
+    public function show(string $id)
     {
-        $game = Game::where('slug', $slug)->firstOrFail();
-        return Inertia::render('Games/Play', [
-            'game' => $game
-        ]);
+        //
     }
 
     /**

@@ -15,7 +15,7 @@ interface Props {
     games: Game[];
 }
 
-export default function Games({ games }: Props) {
+export default function Games({ games = []}: Props) {
     const {
         data,
         setData,
