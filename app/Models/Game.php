@@ -11,17 +11,10 @@ class Game extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'description',
-        'is_published',
-        'url',
-        'user_id',
+        'thumbnail',
+        'component_name',
     ];
 
-    /**
-     * Un juego pertenece a un usuario (creador).
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
 }

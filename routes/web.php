@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,9 +16,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //     return Inertia::render('Dashboard');
     // })->name('dashboard');
 
-    Route::get('/games', function () {
-        return Inertia::render('Games');
-    })->name('games.index');
+Route::prefix('games')->group(function () {
+        // Galería de juegos (Dashboard de jugador)
+        Route::get('/', [GameController::class, 'index'])->name('games.index');
+
+        // La pantalla de juego (El componente Play.tsx que carga tu Three.js)
+        Route::get('/{slug}', [GameController::class, 'show'])->name('games.show');
+    });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
