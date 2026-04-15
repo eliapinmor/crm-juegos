@@ -66,4 +66,15 @@ class GameController extends Controller
     {
         //
     }
+
+    public function sessions()
+    {
+        $sessions = \App\Models\GameSession::with(['user', 'game'])
+            ->orderBy('started_at', 'desc')
+            ->paginate(20);
+
+        return Inertia::render('Admin/Sessions', [
+            'sessions' => $sessions
+        ]);
+    }
 }

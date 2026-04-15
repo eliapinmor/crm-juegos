@@ -46,6 +46,7 @@ Route::middleware(['auth', 'role:admin,gestor'])->prefix('admin')->group(functio
         'destroy' => 'admin.games.destroy',
     ]);
 
+    Route::get('/sessions', [AdminGameController::class, 'sessions'])->name('admin.sessions');
     Route::middleware(['role:admin'])->group(function () {
         Route::resource('users', UserController::class)->names([
             'index' => 'admin.users.index',

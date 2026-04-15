@@ -35,6 +35,22 @@ export default function Dashboard() {
                             </Link>
                         </div>
 
+                        <div className="overflow-hidden border-l-4 border-indigo-500 bg-white p-6 shadow-sm sm:rounded-lg">
+                            <h3 className="mb-2 text-lg font-bold">
+                                Gestión de Sesiones
+                            </h3>
+                            <p className="mb-4 text-gray-600">
+                                Añadir, editar o eliminar juegos de sesiones de la
+                                plataforma.
+                            </p>
+                            <Link
+                                href='/admin/sessions'
+                                className="inline-flex items-center rounded-md border border-transparent bg-indigo-500 px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase transition duration-150 ease-in-out hover:bg-indigo-700 focus:outline-none"
+                            >
+                                Gestionar Sesiones
+                            </Link>
+                        </div>
+
                         {user.role === 'admin' && (
                             <div className="overflow-hidden border-l-4 border-indigo-500 bg-white p-6 shadow-sm sm:rounded-lg">
                                 <h3 className="mb-2 text-lg font-bold">
