@@ -45,7 +45,7 @@ class AuthenticatedSessionController extends Controller
             $pathFinal = $nombreArchivo;
         }
 
-        if (Storage::disk('public')->exists($pathFinal)) {
+        if (!Storage::disk('public')->exists($pathFinal)) {
             Auth::logout();
             return back()->withErrors(['foto_base64' => "Archivo de referencia no encontrado."]);
         }
@@ -92,8 +92,8 @@ class AuthenticatedSessionController extends Controller
             if ($response->successful()) {
                 $distancia = $resultado['distance'] ?? 1.0;
 
-                // Con Facenet (que es el que tienes en main.py), 
-                // una distancia menor a 0.40 suele ser positivo. 
+                // Con Facenet (que es el que tienes en main.py),
+                // una distancia menor a 0.40 suele ser positivo.
                 // Vamos a ser un poco laxos con 0.55 por la luz.
                 if (($resultado['verified'] ?? false) || $distancia <= 0.55) {
                     $request->session()->regenerate();

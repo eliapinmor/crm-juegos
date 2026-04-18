@@ -16,7 +16,7 @@ export default function Register() {
         email: '',
         password: '',
         password_confirmation: '',
-        foto_base64: '', 
+        foto_base64: '',
     });
 
     useEffect(() => {
@@ -25,7 +25,7 @@ export default function Register() {
                 if (videoRef.current) videoRef.current.srcObject = stream;
             })
             .catch(err => console.error("Error cámara:", err));
-        
+
         return () => {
             if (videoRef.current?.srcObject) {
                 (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
@@ -47,9 +47,9 @@ export default function Register() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('register'), {
+        post('/register'), {
             onFinish: () => reset('password', 'password_confirmation'),
-        });
+        };
     };
 
     return (
@@ -119,11 +119,11 @@ export default function Register() {
 
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <InputLabel value="Registro Facial Obligatorio" className="mb-2" />
-                    
+
                     <div className="relative mb-2">
                         <video ref={videoRef} autoPlay className="rounded-lg bg-black w-full h-48 object-cover shadow-inner" />
                         <canvas ref={canvasRef} width="640" height="480" className="hidden" />
-                        
+
                         {captured && (
                             <div className="absolute inset-0 flex items-center justify-center bg-green-500 bg-opacity-20 rounded-lg">
                                 <span className="bg-white px-3 py-1 rounded-full text-green-600 font-bold shadow-sm border border-green-200">
@@ -133,9 +133,9 @@ export default function Register() {
                         )}
                     </div>
 
-                    <PrimaryButton 
-                        type="button" 
-                        onClick={capturePhoto} 
+                    <PrimaryButton
+                        type="button"
+                        onClick={capturePhoto}
                         className="w-full justify-center bg-gray-800"
                     >
                         {captured ? '🔄 Repetir Captura' : '📸 Capturar Rostro'}
@@ -146,7 +146,7 @@ export default function Register() {
 
                 <div className="mt-4 flex items-center justify-end">
                     <Link
-                        href={route('login')}
+                        href='/login'
                         className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                         Already registered?

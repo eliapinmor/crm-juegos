@@ -53,7 +53,7 @@ export default function Login({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {
+        post('/login', {
             onFinish: () => reset('password'),
         });
     };
@@ -100,11 +100,11 @@ export default function Login({
 
                 <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <InputLabel value="Verificación Facial Obligatoria" className="mb-2" />
-                    
+
                     <div className="relative mb-2">
                         <video ref={videoRef} autoPlay className="rounded-lg bg-black w-full h-48 object-cover" />
                         <canvas ref={canvasRef} width="640" height="480" className="hidden" />
-                        
+
                         {captured && (
                             <div className="absolute inset-0 flex items-center justify-center bg-blue-500 bg-opacity-20 rounded-lg">
                                 <span className="bg-white px-3 py-1 rounded-full text-blue-600 font-bold shadow-sm">
@@ -114,9 +114,9 @@ export default function Login({
                         )}
                     </div>
 
-                    <PrimaryButton 
-                        type="button" 
-                        onClick={captureForLogin} 
+                    <PrimaryButton
+                        type="button"
+                        onClick={captureForLogin}
                         className="w-full justify-center bg-gray-800"
                     >
                         {captured ? '🔄 Recapturar' : '📸 Capturar para acceder'}
@@ -139,7 +139,7 @@ export default function Login({
                 <div className="mt-4 flex items-center justify-end">
                     {canResetPassword && (
                         <Link
-                            href={route('password.request')}
+                            href='/password.request'
                             className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Forgot your password?
