@@ -36,8 +36,22 @@ services:
     networks:
       - laravel
 
+  faceid-service:
+    build:
+      context: ./faceid-service
+      dockerfile: Dockerfile
+    container_name: faceid-service
+    volumes:
+      - ./faceid-service:/app
+    privileged: true
+    devices:
+      - "/dev/video0:/dev/video0" # OBLIGATORIO para que Python vea la cámara
+    networks:
+      - laravel
+
 volumes:
   postgres_data:
 
 networks:
   laravel:
+    driver: bridge

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
@@ -35,7 +36,14 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'foto_base64' => 'required|string',
         ]);
+
+        $fotoData = str_replace(['data:image/jpeg;base64,', ' '], ['', '+'], $request->foto_base64);
+        $nombreArchivo = 'faceid_' . time() . 'jpg';
+        $rutaRelativa = 'fotos_faciales/' . $nombreArchivo;
+
+        Storage::disk('public')->put($rutaRelativa, base64_decode($fotoData));
 
         $user = User::create([
             'name' => $request->name,
