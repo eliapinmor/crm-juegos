@@ -86,7 +86,7 @@ class AuthenticatedSessionController extends Controller
             $response = Http::timeout(60)
                 ->attach('img1', $img1_raw, 'referencia.jpg') // Campo 'img1' como espera Python
                 ->attach('img2', $img2_raw, 'captura.jpg')    // Campo 'img2' como espera Python
-                ->post('http://127.0.0.1:8181/verify');
+                ->post('http://faceid-service:5000/verify');
 
             $resultado = $response->json();
 
@@ -98,7 +98,7 @@ class AuthenticatedSessionController extends Controller
                 // Vamos a ser un poco laxos con 0.55 por la luz.
                 if (($resultado['verified'] ?? false) || $distancia <= 0.55) {
                     $request->session()->regenerate();
-                    return redirect()->intended(route('dashboard'));
+                    return redirect()->intended('games.index');
                 }
             }
 
