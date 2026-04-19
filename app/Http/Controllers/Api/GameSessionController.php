@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\GameSession;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class GameSessionController extends Controller
 {
@@ -18,15 +19,21 @@ class GameSessionController extends Controller
             'game_id' => 'required|exists:games,id',
         ]);
 
+        $userId = Auth::id();
+
+        if (!$userId) {
+            return response()->json(['error' => 'Usuario no autenticado'], 401);
+        }
+
         $session = GameSession::create([
-            'user_id'    => $request->user()->id,
-            'game_id'    => $request->game_id,
+            'user_id' => $request->user()->id,
+            'game_id' => $request->game_id,
             'started_at' => now(),
         ]);
 
         return response()->json([
             'session_id' => $session->id,
-            'status'     => 'success'
+            'status' => 'success'
         ], 201);
     }
 
@@ -36,22 +43,22 @@ class GameSessionController extends Controller
     public function end(Request $request, $id)
     {
         $session = GameSession::where('user_id', $request->user()->id)
-                              ->findOrFail($id);
+            ->findOrFail($id);
 
         $startedAt = Carbon::parse($session->started_at);
-        $endedAt   = now();
+        $endedAt = now();
 
         $duration = $endedAt->diffInSeconds($startedAt);
 
         $session->update([
             'ended_at' => $endedAt,
-            'score'    => $request->input('score', 0),
+            'score' => $request->input('score', 0),
             'duration' => $duration,
-            'payload'  => $request->input('payload'),
+            'payload' => $request->input('payload'),
         ]);
 
         return response()->json([
-            'status'   => 'success',
+            'status' => 'success',
             'duration' => $duration
         ]);
     }

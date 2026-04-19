@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use App\Models\Message;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -41,7 +42,14 @@ class GameController extends Controller
     {
         $game = Game::where('slug', $slug)->firstOrFail();
         return Inertia::render('Games/Play', [
-            'game' => $game
+            'game' => $game,
+            'messages' => Message::where('game_id', $game->id)
+            ->with('user:id,name') // Eager loading para optimizar
+            ->latest()
+            ->limit(50)
+            ->get()
+            ->reverse() // Para que salgan en orden cronológico
+            ->values(),
         ]);
     }
 

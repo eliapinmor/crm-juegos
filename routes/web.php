@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Api\GameSessionController;
+use App\Http\Controllers\EmotionController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\Admin\GameController as AdminGameController;
@@ -58,6 +61,17 @@ Route::middleware(['auth', 'role:admin,gestor'])->prefix('admin')->group(functio
             'destroy' => 'admin.users.destroy',
         ]);
     });
+});
+
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('api')->group(function () {
+        Route::post('/game-sessions/start', [GameSessionController::class, 'start']);
+        Route::post('/game-sessions/{id}/end', [GameSessionController::class, 'end']);
+        Route::post('/emotions', [EmotionController::class, 'store']);
+    });
+
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 });
 
 require __DIR__ . '/auth.php';
