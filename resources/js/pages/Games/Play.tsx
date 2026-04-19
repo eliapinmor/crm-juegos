@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
-import EmotionTracker from '@/Components/EmotionTracker'; 
+import EmotionTracker from '@/Components/EmotionTracker';
+import { Game } from '@/Components/Games/pages/Game';
 
 interface Props {
     game: {
@@ -15,7 +16,7 @@ interface Props {
 export default function Play({ game }: Props) {
     const [sessionId, setSessionId] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
-    const [startTime] = useState(Date.now()); // Para calcular el second_offset
+    const [startTime] = useState(Date.now());
 
     useEffect(() => {
         const startSession = async () => {
@@ -26,52 +27,42 @@ export default function Play({ game }: Props) {
                 setSessionId(response.data.session_id);
                 setLoading(false);
             } catch (error) {
-                console.error("Error al iniciar sesión de juego:", error);
+                console.error("Error al iniciar sesión:", error);
                 setLoading(false);
             }
         };
         startSession();
     }, [game.id]);
 
-    const handleGameOver = async (score: number) => {
-        if (!sessionId) return;
-        try {
-            await axios.post(`/api/game-sessions/${sessionId}/end`, {
-                score: score,
-                payload: { message: "Partida finalizada" }
-            });
-        } catch (error) {
-            console.error("Error al guardar la partida:", error);
-        }
-    };
-
     return (
         <AuthenticatedLayout>
             <Head title={`Jugando a ${game.title}`} />
 
-            <div className="relative w-full h-screen bg-black">
+            <div className="relative w-full h-screen bg-gray-950 overflow-hidden">
                 {loading ? (
                     <div className="flex items-center justify-center h-full text-white">
-                        Iniciando sesión de juego...
+                        <p className="animate-pulse">Cargando sesión...</p>
                     </div>
                 ) : (
-                    <div id="game-container">
-                        <h1 className="text-white absolute top-5 left-5">Jugando: {game.title}</h1>
-                        
-                        {/* 2. RENDERIZA EL RASTREADOR SOLO SI HAY SESIÓN */}
+                    <div className="w-full h-full">
+                        {/* 1. EL JUEGO REAL DE THREE.JS */}
+                        {/* Pasamos la función de finalizar si tu juego la necesita */}
+                        <Game />
+
+                        {/* 2. EL RASTREADOR DE EMOCIONES */}
                         {sessionId && (
-                            <EmotionTracker 
-                                gameSessionId={sessionId} 
-                                startTime={startTime} 
+                            <EmotionTracker
+                                gameSessionId={sessionId}
+                                startTime={startTime}
                             />
                         )}
 
-                        <button
-                            onClick={() => handleGameOver(100)}
-                            className="absolute bottom-10 right-10 bg-red-500 p-2 text-white z-50"
-                        >
-                            Simular Fin de Juego
-                        </button>
+                        {/* HUD / Título superpuesto */}
+                        <div className="absolute top-5 left-5 z-20 pointer-events-none">
+                            <h1 className="text-white text-2xl font-bold drop-shadow-lg">
+                                {game.title}
+                            </h1>
+                        </div>
                     </div>
                 )}
             </div>

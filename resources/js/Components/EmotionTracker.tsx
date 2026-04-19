@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
 import axios from 'axios';
 
@@ -7,71 +7,91 @@ interface Props {
     startTime: number;
 }
 
-export default function EmotionTracker({ gameSessionId }: Props) {
+export default function EmotionTracker({ gameSessionId, startTime }: Props) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+    const [currentEmotion, setCurrentEmotion] = useState<string>("loading...");
+
     useEffect(() => {
         const loadModelsAndStart = async () => {
-            // 1. Cargar modelos desde /public/models
             const MODEL_URL = '/models';
-            await Promise.all([
-                faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-                faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
-            ]);
+            try {
+                await Promise.all([
+                    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+                    faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL),
+                ]);
 
-            // 2. Iniciar Cámara
-            navigator.mediaDevices.getUserMedia({ video: {} })
-                .then(stream => {
-                    if (videoRef.current) videoRef.current.srcObject = stream;
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: {} });
+                if (videoRef.current) {
+                    videoRef.current.srcObject = stream;
+                    setCurrentEmotion("waiting...");
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                setCurrentEmotion("error");
+            }
         };
 
         loadModelsAndStart();
 
-        // 3. Intervalo de detección (cada 3 segundos)
         intervalRef.current = setInterval(async () => {
-            if (videoRef.current) {
+            if (videoRef.current && videoRef.current.readyState === 4) {
                 const detection = await faceapi.detectSingleFace(
                     videoRef.current,
                     new faceapi.TinyFaceDetectorOptions()
                 ).withFaceExpressions();
 
                 if (detection) {
-                    // Obtener la emoción con mayor puntaje
                     const expressions = detection.expressions;
                     const bestEmotion = (Object.keys(expressions) as Array<keyof typeof expressions>)
                         .reduce((a, b) => expressions[a] > expressions[b] ? a : b);
 
+                    setCurrentEmotion(bestEmotion);
+
                     sendEmotionToLaravel(bestEmotion, expressions[bestEmotion]);
+                } else {
+                    setCurrentEmotion("not detected");
                 }
             }
         }, 3000);
 
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
+            if (videoRef.current?.srcObject) {
+                (videoRef.current.srcObject as MediaStream).getTracks().forEach(track => track.stop());
+            }
         };
-    }, []);
+    }, [gameSessionId, startTime]);
 
     const sendEmotionToLaravel = async (emotion: string, confidence: number) => {
-        const secondsElapsed = Math.floor((Date.now() - startTime) / 1000); // Cálculo real
+        const secondsElapsed = Math.floor((Date.now() - startTime) / 1000);
         try {
             await axios.post('/api/emotions', {
                 game_session_id: gameSessionId,
                 emotion: emotion,
-                confidence: confidence.toFixed(4),
+                confidence: parseFloat(confidence.toFixed(4)),
                 second_offset: secondsElapsed,
             });
         } catch (error) {
-            console.error("Error enviando emoción:", error);
+            console.error("Error api:", error);
         }
     };
 
     return (
-        <div className="fixed bottom-4 right-4 w-48 border-2 border-indigo-500 rounded-lg overflow-hidden shadow-xl">
-            {/* El video puede estar oculto o pequeño para que el usuario se vea */}
-            <video ref={videoRef} autoPlay muted className="w-full" />
-            <p className="bg-indigo-500 text-white text-xs text-center py-1">Detectando Emociones...</p>
+        <div className="fixed bottom-4 right-4 w-48 border-2 border-indigo-600 rounded-lg overflow-hidden shadow-2xl z-50 bg-black">
+            <video
+                ref={videoRef}
+                autoPlay
+                muted
+                className="w-full h-36 object-cover opacity-80"
+            />
+            <div className="bg-indigo-600 text-white py-1 px-2">
+                <p className="text-[10px] uppercase font-bold opacity-70">Emotion</p>
+                <p className="text-sm font-mono uppercase tracking-wider">
+                    {currentEmotion}
+                </p>
+            </div>
         </div>
     );
 }
