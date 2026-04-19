@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmotionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\GameSessionController;
@@ -11,4 +12,5 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/game-sessions/start', [GameSessionController::class, 'start']);
     Route::post('/game-sessions/{id}/end', [GameSessionController::class, 'end']);
+    Route::post('/emotions', [EmotionController::class, 'store']);
 });

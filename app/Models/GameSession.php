@@ -19,4 +19,9 @@ class GameSession extends Model
     {
         return $this->belongsTo(Game::class);
     }
+
+    public function emotionSnapshots()
+    {
+        return $this->hasMany(EmotionSnapshot::class);
+    }
 }
