@@ -26,4 +26,9 @@ class MessageSent implements ShouldBroadcast
             new Channel('chat.' . $this->message->game_id),
         ];
     }
+
+    public function broadcastAs(): string
+    {
+        return 'MessageSent'; // <-- ESTO simplifica la escucha en React
+    }
 }
