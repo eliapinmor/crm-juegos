@@ -3,8 +3,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head } from '@inertiajs/react';
 import axios from 'axios';
 import EmotionTracker from '@/Components/EmotionTracker';
-import { Game } from '@/Components/Games/pages/Game';
 import GameChat from '@/Components/GameChat';
+import { GAME_COMPONENTS } from '@/Components/Games/GameRegistry';
 
 interface Message {
     id: number;
@@ -29,6 +29,8 @@ export default function Play({ game, messages }: Props) {
     const [sessionId, setSessionId] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [startTime] = useState(Date.now());
+
+    const SelectedGame = GAME_COMPONENTS[game.component_name] || null;
 
     useEffect(() => {
         const startSession = async () => {
@@ -59,29 +61,26 @@ export default function Play({ game, messages }: Props) {
                     </div>
                 ) : (
                     <>
-                        {/* Contenedor del Juego (Ocupa todo el espacio restante) */}
-                        <div className="relative h-full flex-1">
-                            <Game />
-                            {sessionId && (
-                                <EmotionTracker
-                                    gameSessionId={sessionId}
-                                    startTime={startTime}
-                                />
-                            )}
+                       <div className="relative h-full flex-1">
+                            <Suspense fallback={
+                                <div className="flex h-full w-full items-center justify-center bg-black">
+                                    <p className="text-white">Cargando Assets del Juego...</p>
+                                </div>
+                            }>
+                                {SelectedGame ? (
+                                    <SelectedGame gameId={game.id} />
+                                ) : (
+                                    <div className="p-10 text-red-500">Error: Componente [{game.component_name}] no encontrado.</div>
+                                )}
+                            </Suspense>
 
-                            <div className="pointer-events-none absolute top-5 left-5 z-20">
-                                <h1 className="text-2xl font-bold text-white drop-shadow-lg">
-                                    {game.title}
-                                </h1>
-                            </div>
+                            {sessionId && (
+                                <EmotionTracker gameSessionId={sessionId} startTime={startTime}/>
+                            )}
                         </div>
 
-                        {/* Contenedor del Chat (Barra lateral derecha) */}
                         <div className="flex h-full w-80 flex-col border-l border-gray-800 bg-gray-900 p-4">
-                            <GameChat
-                                gameId={game.id}
-                                initialMessages={messages}
-                            />
+                            <GameChat gameId={game.id} initialMessages={messages} />
                         </div>
                     </>
                 )}
