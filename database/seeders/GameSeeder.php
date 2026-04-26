@@ -15,11 +15,18 @@ class GameSeeder extends Seeder
     {
         Game::create([
             'title' => 'Buscador de Objetos 3D',
-            'slug' => 'buscador-objetos', // Esta será la URL: /games/buscador-objetos
+            'slug' => 'buscador-objetos',
             'description' => 'Encuentra los objetos perdidos en la escena 3D.',
-            'thumbnail' => 'https://via.placeholder.com/400x225?text=Buscador+3D',
-            // Este nombre es vital para tu lógica de importación en React
+            'thumbnail' => 'storage/thumbnails/busqueda_visual.jpg',
             'component_name' => 'Game',
+        ]);
+
+        Game::create([
+            'title' => 'Quiz de Mates',
+            'slug' => 'math-quiz',
+            'description' => 'Encuentra los objetos perdidos en la escena 3D.',
+            'thumbnail' => 'storage/thumbnails/math_quiz.jpg',
+            'component_name' => 'MathQuiz',
         ]);
     }
 }

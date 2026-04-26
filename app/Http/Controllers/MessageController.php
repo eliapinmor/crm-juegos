@@ -23,8 +23,12 @@ class MessageController extends Controller
 
         $message->load('user');
 
-        broadcast(new MessageSent($message))->toOthers();
-
+        try {
+            broadcast(new MessageSent($message))->toOthers();
+        } catch (\Exception $e) {
+            \Log::error('REVERB ERROR: ' . $e->getMessage());
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
         return response()->json($message);
     }
 }

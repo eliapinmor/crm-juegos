@@ -46,13 +46,16 @@ export default function GameChat({ gameId, initialMessages }: Props) {
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newMessage.trim()) return;
+        const text = newMessage;
+        setNewMessage('');
 
         try {
-            await axios.post('/messages', {
-                content: newMessage,
+            const response = await axios.post('/messages', {
+                content: text,
                 game_id: gameId,
             });
-            setNewMessage('');
+            setMessages((prev) => [...prev, response.data]);
+
         } catch (error) {
             console.error('Error enviando mensaje', error);
         }
@@ -68,7 +71,7 @@ export default function GameChat({ gameId, initialMessages }: Props) {
                             <span className="font-bold text-indigo-400">
                                 {msg.user.name}
                             </span>
-                            <p className="text-gray-200">{msg.content}</p>
+                            <p>{msg.content}</p>
                         </div>
                     </div>
                 ))}

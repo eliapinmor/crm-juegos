@@ -4,7 +4,7 @@ import { HUD } from '../features/hud/components/HUD';
 import { useGameLogic } from '../features/game-board/hooks/useGameLogic';
 import { GameOver } from './GameOver.tsx';
 
-export const Game = () => {
+export const BusquedaVisual = () => {
     const {
         score,
         timeLeft,

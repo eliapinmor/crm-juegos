@@ -79,7 +79,7 @@ export default function EmotionTracker({ gameSessionId, startTime }: Props) {
     };
 
     return (
-        <div className="fixed bottom-4 right-4 w-48 border-2 border-indigo-600 rounded-lg overflow-hidden shadow-2xl z-50 bg-black">
+        <div className="fixed bottom-4 right-4 w-64 border-2 border-indigo-600 rounded-lg overflow-hidden shadow-2xl z-50 bg-black">
             <video
                 ref={videoRef}
                 autoPlay

@@ -16,21 +16,17 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // Route::get('/dashboard', function () {
-    //     return Inertia::render('Dashboard');
-    // })->name('dashboard');
-
     Route::prefix('games')->group(function () {
-        // Galería de juegos (Dashboard de jugador)
         Route::get('/', [GameController::class, 'index'])->name('games.index');
 
-        // La pantalla de juego (El componente Play.tsx que carga tu Three.js)
         Route::get('/{slug}', [GameController::class, 'show'])->name('games.show');
     });
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
 });
 
 Route::middleware(['auth', 'role:admin,gestor'])->prefix('admin')->group(function () {
@@ -63,15 +59,5 @@ Route::middleware(['auth', 'role:admin,gestor'])->prefix('admin')->group(functio
     });
 });
 
-// routes/web.php
-Route::middleware(['auth'])->group(function () {
-    Route::prefix('api')->group(function () {
-        Route::post('/game-sessions/start', [GameSessionController::class, 'start']);
-        Route::post('/game-sessions/{id}/end', [GameSessionController::class, 'end']);
-        Route::post('/emotions', [EmotionController::class, 'store']);
-    });
-
-    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
-});
 
 require __DIR__ . '/auth.php';
