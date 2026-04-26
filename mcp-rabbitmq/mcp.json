@@ -1,0 +1,11 @@
+{
+  "name": "rabbitmq-publisher",
+  "version": "1.0.0",
+  "description": "MCP server to publish messages to RabbitMQ",
+  "servers": {
+    "http": {
+      "command": "uvicorn",
+      "args": ["server:app", "--host", "127.0.0.1", "--port", "8001"]
+    }
+  }
+}

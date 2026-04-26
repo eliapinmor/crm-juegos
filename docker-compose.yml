@@ -51,6 +51,19 @@ services:
     networks:
       - laravel
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"     # Puerto AMQP (Laravel, Python, MCP)
+      - "15672:15672"   # Panel de administración
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - laravel
+
+
 volumes:
   postgres_data:
 
