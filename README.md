@@ -96,3 +96,66 @@ El sistema se basa en una arquitectura de microservicios donde Laravel actúa co
 
 * `routes/web.php`: Navegación, renderizado de componentes Inertia y Chat (vía cookies).
 * `routes/api.php`: Endpoints protegidos para sesiones de juego y almacenamiento de emociones.
+
+## RabbitMQ - Arquitectura Orientada a Eventos
+Flujo de eventos
+```bash
+Claude → MCP (publish_to_rabbitmq) → RabbitMQ → Consumer Python
+```
+
+## Estructura del Repo (eventos)
+```bash
+crm-juegos/
+│
+├── mcp-rabbitmq/
+│   ├── server.py
+│   └── requirements.txt
+│
+├── consumer-service/
+│   ├── consumer.py
+│   └── requirements.txt
+│
+└── .vscode/
+    └── mcp.json
+
+```
+
+## Arrancar RabbitMQ
+```bash
+docker run -d --hostname rabbit --name rabbitmq \
+  -p 5672:5672 -p 15672:15672 rabbitmq:3-management
+```
+Panel de control:
+http://localhost:15672
+Usuario: guest  
+Contraseña: guest
+
+## Arrancar RabbitMQ
+```bash
+cd mcp-rabbitmq
+pip install -r requirements.txt
+python server.py
+```
+
+## Publicar un evento desde Claude Code
+```bash
+Usa la herramienta publish_to_rabbitmq con:
+queue_name = "test"
+message = {"hola": "mundo"}
+```
+
+## Arrancar el consumidor Python
+```bash
+cd consumer-service
+pip install -r requirements.txt
+python consumer.py
+```
+
+Si aparece el siguiente código será correcto:
+```bash
+👂 Esperando mensajes en la cola 'test'...
+📩 Mensaje recibido:
+{
+    "hola": "mundo"
+}
+```
