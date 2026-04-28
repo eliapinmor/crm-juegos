@@ -143,6 +143,9 @@ Usa la herramienta publish_to_rabbitmq con:
 queue_name = "test"
 message = {"hola": "mundo"}
 ```
+<img width="1913" height="568" alt="Captura de pantalla 2026-04-26 174906" src="https://github.com/user-attachments/assets/fc8e4653-6131-461a-a30c-67b5c7e0a0c5" />
+
+
 
 ## Arrancar el consumidor Python
 ```bash
@@ -159,3 +162,5 @@ Si aparece el siguiente código será correcto:
     "hola": "mundo"
 }
 ```
+
+<img width="1357" height="897" alt="Captura de pantalla 2026-04-26 174918" src="https://github.com/user-attachments/assets/d9a0cafa-104b-46e7-baa9-4c005633a946" />
