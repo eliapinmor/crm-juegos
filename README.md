@@ -164,3 +164,7 @@ Si aparece el siguiente código será correcto:
 ```
 
 <img width="1357" height="897" alt="Captura de pantalla 2026-04-26 174918" src="https://github.com/user-attachments/assets/d9a0cafa-104b-46e7-baa9-4c005633a946" />
+
+## Resultado final demostrando que RabbitMQ funciona
+Después de crear una rama, hacemos una modificación y después una pull request a main. Una vez hemos hecho eso, preguntamos a Claude Code si existe alguna pull request y obtenemos su respuesta:
+<img width="962" height="573" alt="image" src="https://github.com/user-attachments/assets/3345c7da-09f1-4684-914b-4b131844d90f" />
